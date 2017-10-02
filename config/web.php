@@ -27,9 +27,6 @@ $config = [
 			],
 		],
 		'db' => $db,
-		'WeatherData' => [
-			'class' => 'common\components\WeatherData',
-		],
 	],
 	'params' => $params,
 ];

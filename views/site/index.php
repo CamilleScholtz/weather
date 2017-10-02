@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use kartik\date\DatePicker;
 use phpnt\chartJS\ChartJs;
@@ -20,11 +21,10 @@ $this->title = 'Weather';
 		echo '</br>';
 		echo DatePicker::widget([
 			'model'         => $model,
-			'form'          => $form,
 			'attribute'     => 'start',
 			'attribute2'    => 'end',
-			'value'         => current($date),
-			'value2'        => end($date),
+			'value'         => $model->start,
+			'value2'        => $model->end,
 			'type'          => DatePicker::TYPE_RANGE,
 			'pluginOptions' => [
 				'autoclose'      => TRUE,
@@ -42,18 +42,18 @@ $this->title = 'Weather';
 		</br></br>
 
 		<?php
-		$data = [
-			'labels' => $date,
+		$content = [
+			'labels' => $model->date,
 			'datasets' => [
 				[
-					'data'                 => $avarage,
+					'data'                 => $model->avarage,
 					'label'                => 'Avarage temperature',
 					'fill'                 => FALSE,
 					'borderColor'          => 'rgba(255, 99, 132, 1)',
 					'pointBackgroundColor' => 'rgba(255, 99, 132, 1)',
 				],
 				[
-					'data'                 => $minimum,
+					'data'                 => $model->minimum,
 					'label'                => 'Mininmum temperature',
 					'fill'                 => FALSE,
 					'backgroundColor'      => 'rgba(54, 162, 235, .05)',
@@ -64,7 +64,7 @@ $this->title = 'Weather';
 					'pointRadius'          => 0,
 				],
 				[
-					'data'                 => $maximum,
+					'data'                 => $model->maximum,
 					'label'                => 'Maximum temperature',
 					'fill'                 => +1,
 					'backgroundColor'      => 'rgba(54, 162, 235, .05)',
@@ -79,7 +79,7 @@ $this->title = 'Weather';
 
 		echo ChartJs::widget([
 			'type'    => ChartJs::TYPE_LINE,
-			'data'    => $data,
+			'data'    => $content,
 			'options' => [
 				 'legend' => [
 					 'display' => FALSE,
@@ -103,5 +103,14 @@ $this->title = 'Weather';
 			],
 		]);
 		?>
+
+		</br><hr>
+
+		<a href="<?=Url::to([
+			'site/spreadsheet',
+			'start'   => $model->start,
+			'end'     => $model->end,
+			'station' => $model->station,
+		]);?>">Download</a> spreadsheet or <a href="https://github.com/onodera-punpun/weather">view</a> source code.
 	</div>
 </div>
