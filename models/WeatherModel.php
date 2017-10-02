@@ -6,8 +6,6 @@ use Yii;
 use yii\base\Model;
 
 class WeatherModel extends Model {
-	public $id;
-
 	// The date in yyyy-mm-dd where we want to start gathering weather info.
 	public $start;
 
@@ -39,6 +37,8 @@ class WeatherModel extends Model {
 		];
 	}
 
+	// getData gathers data from the KNMI API, it returns unparsed data and
+	// still includes garbage such as comments.
 	public function getData() {
 		$client = new \GuzzleHttp\Client([
 			'base_uri' => 'http://projects.knmi.nl/klimatologie/',
@@ -57,6 +57,8 @@ class WeatherModel extends Model {
 		$this->data = $response->getBody();
 	}
 
+	// parseData parses the the data returned by getData. It stores the cleaned
+	// up data in various arrays such as $date, $avarage, $minimum and $maximum.
 	public function parseData() {
 		foreach (explode("\n", $this->data) as $line) {
 			// Ignore comments.
@@ -73,6 +75,7 @@ class WeatherModel extends Model {
 				$v = trim($v);
 			});
 
+			// Store and prettify data.
 			$this->date[] = date('Y-m-d', strtotime($array[1]));
 			$this->avarage[] = $array[2]/10;
 			$this->minimum[] = $array[3]/10;
@@ -80,6 +83,8 @@ class WeatherModel extends Model {
 		}
 	}
 
+	// getStatons returns an array with all valid station names and their
+	// respective IDs.
 	public function getStations() {
 		return [
 			'260' => 'De Bilt',
